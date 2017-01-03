@@ -3,8 +3,11 @@
 ID=$(echo $1 | cut -d'-' -f 2)
 ID=$(echo $ID | cut -d'.' -f 1)
 
-PATH_TO_TOOLS=~/w/statistics/b/
-RESULT_BASE_PATH=~/Desktop/ToDo/HPC/
+# path to the statistic tools
+PATH_TO_TOOLS=$2
+# path for the results
+RESULT_BASE_PATH=$3
+
 RESULT_PATH=$RESULT_BASE_PATH/$ID
 
 if [ ! -d "$RESULT_PATH" ]; then

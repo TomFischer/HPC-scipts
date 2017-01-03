@@ -1,1 +1,1 @@
-# HPC-scipts
+# HPC-scripts

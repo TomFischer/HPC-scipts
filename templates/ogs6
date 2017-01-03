@@ -1,0 +1,23 @@
+#!/bin/bash
+
+#$ -S /bin/bash
+#$ -l h_rt=0:15:00
+
+# output files
+#$ -o results/$JOB_NAME-$JOB_ID.out
+#$ -e results/$JOB_NAME-$JOB_ID.err
+#$ -cwd
+
+#$ -l h_vmem=6G
+#$ -pe openmpi-orte-20 20
+
+#$ -m beas
+#$ -M thomas.fischer@ufz.de
+
+
+module load gcc/4.8.1-3
+module load boost
+module load vtk/6.3.0_openmpi-1.8.4-noqt-1
+module load petsc/3.7.2_maint_petsc_maint_3.7.2_gcc_openmpi_1.8.4-2
+
+mpirun -np $NSLOTS /home/fischeth/w/o/br_f1/bin/ogs -l debug cube_1x1x1.prj -o results/

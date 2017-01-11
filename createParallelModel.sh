@@ -33,7 +33,7 @@ if [ ! -d "${wd}/${np}" ]; then
     ${partitioner} -m -n ${np} -i ${wd}/${np}/cube_1x1x1
     echo "partmesh -m -np ${np} -i ${wd}/${np}/cube_1x1x1 ... done";
     cp templates/cube_1x1x1.gml ${wd}/${np}/;
-    cp templates/ogs6 ${wd}/${np}/ogs6_${np}_benchmark.sh;
+    cp templates/ogs6 ${wd}/${np}/ogs6_${np}_${d}x${d}x${d}_benchmark.sh;
     cp templates/cube_1x1x1.prj ${wd}/${np}/;
 
     mkdir ${wd}/${np}/results

@@ -9,6 +9,7 @@
 #$ -cwd
 
 #$ -l h_vmem=6G
+#$ -l psm_nfreectxts=16
 #$ -pe openmpi-orte-20 20
 
 #$ -m beas

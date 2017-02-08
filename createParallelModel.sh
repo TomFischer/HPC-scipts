@@ -34,6 +34,7 @@ if [ ! -d "${wd}/${np}" ]; then
     echo "partmesh -m -np ${np} -i ${wd}/${np}/cube_1x1x1 ... done";
     cp templates/cube_1x1x1.gml ${wd}/${np}/;
     cp templates/ogs6 ${wd}/${np}/ogs6_${np}_${d}x${d}x${d}_benchmark.sh;
+    sed -i "s/NNN/${np}/" ${wd}/${np}/ogs6_${np}_${d}x${d}x${d}_benchmark.sh;
     cp templates/cube_1x1x1.prj ${wd}/${np}/;
 
     mkdir ${wd}/${np}/results

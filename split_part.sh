@@ -14,7 +14,8 @@ if [ ! -d "$RESULT_PATH" ]; then
     mkdir -p $RESULT_PATH
 fi
 
-grep 'reading mesh' $1 | awk '{print $6}' | cut -d':' -f 2 > $RESULT_PATH/reading_mesh.txt
+# old version: grep 'reading mesh' $1 | awk '{print $6}' | cut -d':' -f 2 > $RESULT_PATH/reading_mesh.txt
+grep 'Reading the mesh took' $1 | awk '{print $7}' > $RESULT_PATH/reading_mesh.txt
 ${PATH_TO_TOOLS}/max -i $RESULT_PATH/reading_mesh.txt >> $RESULT_BASE_PATH/reading_mesh.txt
 
 #grep 'Output took' $1 | awk '{print $5}' # | cut -d':' -f 2 > $ID-reading_mesh.txt

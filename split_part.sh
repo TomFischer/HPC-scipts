@@ -1,6 +1,7 @@
 #!/bin/bash
+set +
 
-ID=$(echo $1 | cut -d'-' -f 2)
+ID=$(basename $1 | cut -d'-' -f 2)
 ID=$(echo $ID | cut -d'.' -f 1)
 
 # path to the statistic tools

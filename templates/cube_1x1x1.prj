@@ -33,12 +33,11 @@
                         <variable> pressure </variable>
                     </variables>
                 </output>
+        	<time_stepping>
+			<type>SingleStep</type>
+        	</time_stepping>
             </process>
         </processes>
-
-        <time_stepping>
-            <type>SingleStep</type>
-        </time_stepping>
 
         <output>
             <type>VTK</type>

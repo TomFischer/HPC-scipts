@@ -1,7 +1,7 @@
 #!/bin/sh
 
-mesh_generator=~/w/o/build_serial/bin/generateStructuredMesh
-partitioner=~/w/o/build_serial/bin/partmesh
+mesh_generator=~/w/o/br/bin/generateStructuredMesh
+partitioner=~/w/o/br/bin/partmesh
 
 d=$1
 np=$2

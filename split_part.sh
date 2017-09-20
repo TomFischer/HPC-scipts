@@ -15,9 +15,9 @@ if [ ! -d "$RESULT_PATH" ]; then
     mkdir -p $RESULT_PATH
 fi
 
-# old version: grep 'reading mesh' $1 | awk '{print $6}' | cut -d':' -f 2 > $RESULT_PATH/reading_mesh.txt
 grep 'Reading the mesh took' $1 | awk '{print $7}' > $RESULT_PATH/reading_mesh.txt
 ${PATH_TO_TOOLS}/max -i $RESULT_PATH/reading_mesh.txt >> $RESULT_BASE_PATH/reading_mesh.txt
+
 
 #grep 'Output took' $1 | awk '{print $5}' # | cut -d':' -f 2 > $ID-reading_mesh.txt
 
@@ -27,7 +27,9 @@ ${PATH_TO_TOOLS}/max -i $RESULT_PATH/assembly.txt >> $RESULT_BASE_PATH/assembly.
 grep 'Applying Dirichlet BCs took' $1 | awk '{print $7}' > $RESULT_PATH/dirichlet.txt
 ${PATH_TO_TOOLS}/max -i $RESULT_PATH/dirichlet.txt >> $RESULT_BASE_PATH/dirichlet.txt
 
+echo "grep 'Linear solver took' $1 | awk '{print $6}' > $RESULT_PATH/linear-solver.txt"
 grep 'Linear solver took' $1 | awk '{print $6}' > $RESULT_PATH/linear-solver.txt
+echo "${PATH_TO_TOOLS}/max -i $RESULT_PATH/linear-solver.txt >> $RESULT_BASE_PATH/linear-solver.txt"
 ${PATH_TO_TOOLS}/max -i $RESULT_PATH/linear-solver.txt >> $RESULT_BASE_PATH/linear-solver.txt
 
 grep 'Solving process' $1 | awk '{print $7}' > $RESULT_PATH/process.txt

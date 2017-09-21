@@ -7,7 +7,6 @@ import sys
 import glob
 import pylab
 
-
 # reading and parsing functions
 
 def tryMatch(line, regex, array):
@@ -95,8 +94,8 @@ def computeStatisticsForExperiment(frames, column):
 
 
 def evaluateExperimentsForFixedNumberOfProcesses(number, mesh, output0, assembly, dirichlet, linear_solver, iteration1, solving_timestep1, timestep1, output1, execution, cells, partitions):
-    glob_name = '/home/fischeth/data/hpc-results/GroundwaterFlow/TAURUS/*/'
-    glob_name += str(number)
+    glob_name = sys.argv[1]
+    glob_name += '/*/' + str(number)
     glob_name += '/*.out'
     file_list = glob.glob(glob_name)
     raw_data_frames = readFilesForExperiment(file_list)

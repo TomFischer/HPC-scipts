@@ -36,7 +36,22 @@ def readSingleFile(filename):
         tryMatch(line, '.*time.*Solving process #0 took (.*) s in time step #1', solving_timestep1)
         tryMatch(line, '.*time.*Time step #1 took (.*) s', timestep1)
         tryMatch(line, '.*time.*Output of timestep 1 took (.*) s', output1)
+        #tryMatch(line, '.Output of timestep 1 took (.*) s', output1)
         tryMatch(line, '.*time.*Execution took (.*) s', execution)
+
+    print('filename: ' + filename)
+    # print('length of array mesh: ' + str(len(mesh)))
+    # print('length of array assembly: ' + str(len(assembly)))
+    # print('length of array output0: ' + str(len(output0)))
+    # print('length of array dirichlet: ' + str(len(dirichlet)))
+    # print('length of array linear_solver: ' + str(len(linear_solver)))
+    # print('length of array iteration1: ' + str(len(iteration1)))
+    # print('length of array solving_timestep1: ' + str(len(solving_timestep1)))
+    # print('length of array timestep1: ' + str(len(timestep1)))
+    # print('length of array output1: ' + str(len(output1)))
+    # print('length of array execution: ' + str(len(execution)))
+
+    print('output time step 1 : ', output1)
 
     df = pd.DataFrame(data={
             'mesh' : mesh,
@@ -59,6 +74,9 @@ def readFilesForExperiment(file_list):
         #print(f)
         frames.append(readSingleFile(f))
         frames[-1]['run'] = i
+        # JURECA
+        #match = re.search('.*x([0-9]+)/([0-9]+)/results/.*out', f)
+        # TAURUS
         match = re.search('.*x([0-9]+)/([0-9]+)/.*out', f)
 
         # Number of cells in a cube with so many divisions along each side
@@ -95,9 +113,15 @@ def computeStatisticsForExperiment(frames, column):
 
 def evaluateExperimentsForFixedNumberOfProcesses(number, mesh, output0, assembly, dirichlet, linear_solver, iteration1, solving_timestep1, timestep1, output1, execution, cells, partitions):
     glob_name = sys.argv[1]
-    glob_name += '/*/' + str(number)
+    glob_name += '/'
+    glob_name += str(number)
+    # juelich
+    #glob_name += '/results/*.out'
+    # taurus
     glob_name += '/*.out'
+    print (glob_name)
     file_list = glob.glob(glob_name)
+    print (file_list)
     raw_data_frames = readFilesForExperiment(file_list)
 
     cells.append(raw_data_frames[0].cells[0])
@@ -137,11 +161,18 @@ solving_timestep1 = []
 timestep1 = []
 execution = []
 
-evaluateExperimentsForFixedNumberOfProcesses(24, mesh, output0, assembly, dirichlet, linear_solver, iteration1, solving_timestep1, timestep1, output1, execution, cells, partitions)
-evaluateExperimentsForFixedNumberOfProcesses(48, mesh, output0, assembly, dirichlet, linear_solver, iteration1, solving_timestep1, timestep1, output1, execution, cells, partitions)
+# JURECA and TAURUS
+#evaluateExperimentsForFixedNumberOfProcesses(24, mesh, output0, assembly, dirichlet, linear_solver, iteration1, solving_timestep1, timestep1, output1, execution, cells, partitions)
+#evaluateExperimentsForFixedNumberOfProcesses(48, mesh, output0, assembly, dirichlet, linear_solver, iteration1, solving_timestep1, timestep1, output1, execution, cells, partitions)
+#evaluateExperimentsForFixedNumberOfProcesses(72, mesh, output0, assembly, dirichlet, linear_solver, iteration1, solving_timestep1, timestep1, output1, execution, cells, partitions)
+#evaluateExperimentsForFixedNumberOfProcesses(96, mesh, output0, assembly, dirichlet, linear_solver, iteration1, solving_timestep1, timestep1, output1, execution, cells, partitions)
+#evaluateExperimentsForFixedNumberOfProcesses(120, mesh, output0, assembly, dirichlet, linear_solver, iteration1, solving_timestep1, timestep1, output1, execution, cells, partitions)
+
+# mistral
+evaluateExperimentsForFixedNumberOfProcesses(36, mesh, output0, assembly, dirichlet, linear_solver, iteration1, solving_timestep1, timestep1, output1, execution, cells, partitions)
 evaluateExperimentsForFixedNumberOfProcesses(72, mesh, output0, assembly, dirichlet, linear_solver, iteration1, solving_timestep1, timestep1, output1, execution, cells, partitions)
-evaluateExperimentsForFixedNumberOfProcesses(96, mesh, output0, assembly, dirichlet, linear_solver, iteration1, solving_timestep1, timestep1, output1, execution, cells, partitions)
-evaluateExperimentsForFixedNumberOfProcesses(120, mesh, output0, assembly, dirichlet, linear_solver, iteration1, solving_timestep1, timestep1, output1, execution, cells, partitions)
+evaluateExperimentsForFixedNumberOfProcesses(108, mesh, output0, assembly, dirichlet, linear_solver, iteration1, solving_timestep1, timestep1, output1, execution, cells, partitions)
+evaluateExperimentsForFixedNumberOfProcesses(144, mesh, output0, assembly, dirichlet, linear_solver, iteration1, solving_timestep1, timestep1, output1, execution, cells, partitions)
 
 s = assembly[0]
 pylab.plot(partitions, [s / x for x in assembly], label='assembly')
@@ -161,12 +192,21 @@ pylab.plot(partitions, [s / x for x in output1], label='output1')
 s = execution[0]
 pylab.plot(partitions, [s / x for x in execution], label='execution')
 
-idealy = np.arange(1,6)
-idealx = [x * 24 for x in idealy]
+# JURECA
+#idealy = np.arange(1,6)
+#idealx = [x * 24 for x in idealy]
+#pylab.plot(idealx, idealy, label='ideal')
+
+# mistral
+idealy = np.arange(1,5)
+idealx = [x * 36 for x in idealy]
 pylab.plot(idealx, idealy, label='ideal')
 
 pylab.legend()
 pylab.xlabel("number of processes")
-pylab.ylabel("scaling $\\frac{t(N)}{t(24)}$")
+# JURECA
+# pylab.ylabel("scaling $\\frac{t(N)}{t(24)}$")
+# mistral
+pylab.ylabel("scaling $\\frac{t(N)}{t(36)}$")
 pylab.show()
 

@@ -1,0 +1,26 @@
+#!/bin/bash -x
+
+#SBATCH --nodes=1
+#SBATCH --ntasks=NNN
+#SBATCH --ntasks-per-node=68
+
+#SBATCH --output=results/out_%j.txt
+#SBATCH --error=results/err_%j.txt
+
+#SBATCH --time=00:15:00
+#SBATCH --partition=develbooster
+
+#SBATCH --mail-user thomas.fischer@ufz.de
+#SBATCH --mail-type ALL
+
+module load Architecture/KNL
+module load GCC/7.2.0
+module load ParaStationMPI/5.2.0-1
+
+project_path=/work/paj1737/paj17370/knl_booster/gwf/DDDxDDDxDDD/
+output_path=$project_path/NNN/results/
+mkdir -p $output_path
+project_file=$project_path/NNN/cube_1x1x1.prj
+cp $project_file $output_path
+srun ~/w/o/br_petsc/bin/ogs $project_file -o $output_path
+

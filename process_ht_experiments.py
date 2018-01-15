@@ -36,7 +36,7 @@ def tryMatch(line, regex):
 
 def parseTimeStepItem(iss, time_step_item):
     for line in iss:
-        match = re.search('.*time.* Iteration #', line)
+        match = re.search('info: .*time.* Iteration #.* took .*', line)
         if match:
             return
         assembly_time = tryMatch(line, '.*time.*Assembly took (.*) s')
@@ -51,7 +51,7 @@ def parseTimeStepItem(iss, time_step_item):
 
 def parseTimeStepItems(iss, time_step):
     for line in iss:
-        match = re.search('.*time.* Time step #', line)
+        match = re.search('.*time.* Time step #.* took .*', line)
         if match:
             return
         match = re.search('.*time.* Solving process #', line)
@@ -67,7 +67,6 @@ def parseTimeStep(iss, time_steps):
         if match:
             time_step = TimeStep()
             parseTimeStepItems(iss, time_step)
-            print("read time step: " + str(len(time_step.time_step_items)))
             time_steps.append(time_step)
 
 

@@ -20,7 +20,11 @@ class TimeStepItem:
 
 class TimeStep:
     """Class to store information about a time step"""
-    time_step_items = []
+    def __init__(self):
+        self.time_step_items = []
+
+    def addTimeStepItem(self, item):
+        self.time_step_items.append(item)
 
 # reading and parsing functions
 def tryMatch(line, regex):
@@ -55,7 +59,7 @@ def parseTimeStepItems(iss, time_step):
             return
         time_step_item = TimeStepItem()
         parseTimeStepItem(iss, time_step_item)
-        time_step.time_step_items.append(time_step_item)
+        time_step.addTimeStepItem(time_step_item)
 
 def parseTimeStep(iss, time_steps):
     for line in iss:

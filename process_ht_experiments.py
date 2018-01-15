@@ -80,6 +80,11 @@ number_time_steps = len(time_steps)
 time_step_number = number_time_steps-1
 time_step = time_steps[time_step_number]
 
-number_of_items_in_time_step = len(time_steps[number_time_steps-1].time_step_items)
-print("number of items in last time step: " + str(number_of_items_in_time_step))
+for i in range(0, len(time_steps)):
+    assembly_time_per_time_step = 0
+    linear_solver_time_per_time_step = 0
+    for j in range(0, len(time_steps[i].time_step_items)):
+        assembly_time_per_time_step += time_steps[i].time_step_items[j].assembly_time
+        linear_solver_time_per_time_step += time_steps[i].time_step_items[j].run_time_linear_solver
+    print(str(i) + " " + str(len(time_steps[i].time_step_items)) + " " + str(assembly_time_per_time_step) + " " + str(linear_solver_time_per_time_step))
 

@@ -80,30 +80,59 @@ def parseTimeStepItems(iss, time_step, number_processes):
         time_step.addTimeStepItem(time_step_item)
 
 def parseTimeStep(iss, time_steps, number_processes):
-    print('parseTimeStep')
+    time_step_cnt = 0
     for line in iss:
-        match = re.search('.*=== Time stepping at step', line)
+        match = re.search('\[(.*)\] === Time stepping at step*.', line)
         if match:
-            time_step = TimeStep()
-            parseTimeStepItems(iss, time_step, number_processes)
-            time_steps.append(time_step)
+            time_step_cnt += 1
+                #time_step = TimeStep()
+                #parseTimeStepItems(iss, time_step, number_processes)
+                #time_steps.append(time_step)
+    print('number of time steps: ' + str(time_step_cnt))
+
+def getTimeStepRange(iss, number_of_ranks, time_step_number):
+    begin_expression = '.* === Time stepping at step #' + str(time_step_number) + ' *.'
+    end_expression = '.* \[time\] Time step #' + str(time_step_number) + ' *.'
+    line_counter = 1
+    time_step_begin = -1
+    time_step_end = -1
+    time_step_end_cnt = 0
+    for line in iss:
+        match = re.search(begin_expression, line)
+        if match and time_step_begin == -1:
+            time_step_begin = line_counter
+        line_counter += 1
+        match = re.search(end_expression, line)
+        if match and time_step_end_cnt < number_of_ranks-1:
+            time_step_end_cnt += 1
+        if time_step_end_cnt == number_of_ranks-1:
+            time_step_end = line_counter
+            return time_step_begin, time_step_end
+
+
 
 time_steps = []
-iss = open(sys.argv[1])
+lines = open(sys.argv[1]).readlines()
 number_processes = 20
-parseTimeStep(iss, time_steps, number_processes)
+
+time_step_number = 3
+time_step_begin, time_step_end = getTimeStepRange(lines, number_processes, time_step_number)
+print('time step #' + str(time_step_number) + ' starts in line ' + str(time_step_begin))
+print('time step #' + str(time_step_number) + ' ends in line ' + str(time_step_end))
+
+parseTimeStep(lines, time_steps, number_processes)
 
 print("read " + str(len(time_steps)) + " time steps")
 
 number_time_steps = len(time_steps)
 time_step_number = number_time_steps-1
-time_step = time_steps[time_step_number]
+# time_step = time_steps[time_step_number]
 
-for i in range(0, len(time_steps)):
-    assembly_time_per_time_step = 0
-    linear_solver_time_per_time_step = 0
-    for j in range(0, len(time_steps[i].time_step_items)):
-        assembly_time_per_time_step += time_steps[i].time_step_items[j].assembly_time
-        linear_solver_time_per_time_step += time_steps[i].time_step_items[j].run_time_linear_solver
-    print(str(i) + " " + str(len(time_steps[i].time_step_items)) + " " + str(assembly_time_per_time_step) + " " + str(linear_solver_time_per_time_step))
+# for i in range(0, len(time_steps)):
+#     assembly_time_per_time_step = 0
+#     linear_solver_time_per_time_step = 0
+#     for j in range(0, len(time_steps[i].time_step_items)):
+#         assembly_time_per_time_step += time_steps[i].time_step_items[j].assembly_time
+#         linear_solver_time_per_time_step += time_steps[i].time_step_items[j].run_time_linear_solver
+#     print(str(i) + " " + str(len(time_steps[i].time_step_items)) + " " + str(assembly_time_per_time_step) + " " + str(linear_solver_time_per_time_step))
 

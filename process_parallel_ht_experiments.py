@@ -60,7 +60,6 @@ def parseTimeStepItem(lines, begin, end, time_step_item, number_processes):
             time_step_item.run_time_linear_solver[pos] = float_value
 
 def parseTimeStepItems(iss, time_step, number_processes):
-    print('parseTimeStepItems')
     cnt_time_step_items = 0
     for line in iss:
         match = re.search('.*time.* Time step #.* took .*', line)

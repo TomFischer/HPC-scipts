@@ -1,0 +1,28 @@
+#!/bin/bash -x
+
+#SBATCH --nodes=NODES
+#SBATCH --ntasks-per-node=TASKS_PER_NODE
+
+#SBATCH --output=%j_out.txt
+#SBATCH --error=%j_err.txt
+
+#SBATCH --time=00:15:00
+#SBATCH --partition=develbooster
+
+#SBATCH --mail-user thomas.fischer@ufz.de
+#SBATCH --mail-type ALL
+
+module load Architecture/KNL
+module load GCC/7.2.0
+module load ParaStationMPI/5.2.0-1
+
+project_path=$WORK/ARCHITECTURE/gwf/DDDxDDDxDDD/TOTAL_TASKS/
+output_path=$project_path/results/${SLURM_JOB_NAME}/${SLURM_JOB_ID}/
+mkdir -p $output_path
+
+project_file=$project_path/cube_1x1x1.prj
+cp $project_file $output_path
+srun ~/w/o/knl_br_petsc/bin/ogs_master $project_file -o $output_path
+mv ${SLURM_JOB_ID}_out.txt $output_path/out.txt
+mv ${SLURM_JOB_ID}_err.txt $output_path/err.txt
+

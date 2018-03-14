@@ -16,7 +16,7 @@ for i in np.arange(1, len(sys.argv)):
     assembly_times.append(data[:,2])
     linear_solver_times.append(data[:,3])
 
-idealy = np.arange(1,5)
+idealy = np.arange(1, len(assembly_times[len(assembly_times)-1])+1)
 idealx = [x * 24 for x in idealy]
 fig, ax = plt.subplots(figsize=(8,6))
 ax.grid(True, linestyle='-.')

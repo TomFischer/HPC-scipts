@@ -5,7 +5,6 @@ import pandas as pd
 import re # regular expressions
 import sys
 import glob
-import matplotlib.pyplot as plt
 
 class TimeStepItem:
     """Class to store information about one linear step"""

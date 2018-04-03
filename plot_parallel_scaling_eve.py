@@ -17,14 +17,14 @@ for i in np.arange(1, len(sys.argv)):
     linear_solver_times.append(data[:,3])
 
 idealy = np.arange(1, len(assembly_times[len(assembly_times)-1])+1)
-idealx = [x * 24 for x in idealy]
-fig, ax = plt.subplots(figsize=(5,3))
+idealx = [x * 20 for x in idealy]
+fig, ax = plt.subplots(figsize=(8,6))
 ax.grid(True, linestyle='-.')
 
-fname='scaling_jureca'
+fname='scaling_eve'
 ax.plot(idealx, idealy, 'k--', label='ideal')
 
-sublabels = ['MPI (jureca node)', 'MPI (booster)', 'MPI (booster_opt)']
+sublabels = ['MPI', 'hybrid MPI/OpenMP', '']
 linestyles = ['-', '-.', ':']
 
 for i in np.arange(0, len(assembly_times)):
@@ -38,7 +38,7 @@ for i in np.arange(0, len(assembly_times)):
 
 pylab.legend()
 ax.set_xlabel("number of processes")
-ax.set_ylabel("scaling $\\frac{t(N)}{t(24)}$")
+ax.set_ylabel("scaling $\\frac{t(N)}{t(20)}$")
 
 fig.savefig(fname + '.pdf')
 

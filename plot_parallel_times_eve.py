@@ -19,9 +19,9 @@ for i in np.arange(1, len(sys.argv)):
 fig, ax = plt.subplots(figsize=(8,6))
 ax.grid(True, linestyle='-.')
 
-fname='run_times'
+fname='run_times_eve'
 
-sublabels = ['MPI (jureca node)', 'MPI (booster)', 'MPI (booster_opt)']
+sublabels = ['MPI', 'hybrid MPI/OpenMP']
 linestyles = ['-', '-.', ':']
 
 for i in np.arange(0, len(assembly_times)):

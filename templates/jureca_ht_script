@@ -1,0 +1,26 @@
+#!/bin/bash -x
+
+#SBATCH --nodes=NNODES
+#SBATCH --ntasks=NTASKS
+#SBATCH --ntasks-per-node=24
+
+#SBATCH --output=results/%j-out.txt
+#SBATCH --error=results/%j-err.txt
+
+#SBATCH --time=RUNTIME
+#SBATCH --partition=batch
+
+#SBATCH --mail-user thomas.fischer@ufz.de
+#SBATCH --mail-type ALL
+
+module load GCC
+module load ParaStationMPI
+
+project_path=$WORK/cube_ht_benchmark/MODELREVISION/NTASKS/
+output_path=$project_path/results/${SLURM_JOB_NAME}/${SLURM_JOB_ID}/
+mkdir -p $output_path
+project_file=$project_path/PROJECTFILE
+cp $project_file $output_path
+srun ~/w/o/br_petsc/bin/ogs_dirichlet $project_file -o $output_path
+mv results/${SLURM_JOB_ID}-out.txt $output_path/out.txt
+mv results/${SLURM_JOB_ID}-err.txt $output_path/err.txt

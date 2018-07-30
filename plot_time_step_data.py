@@ -6,54 +6,65 @@ from numpy import genfromtxt
 import sys
 import pylab
 
-data0 = genfromtxt(sys.argv[1], delimiter=' ')
-data1 = genfromtxt(sys.argv[2], delimiter=' ')
-data2 = genfromtxt(sys.argv[3], delimiter=' ')
-data3 = genfromtxt(sys.argv[4], delimiter=' ')
+time_step_number = []
+number_of_nonlinear_iterations = []
+time_for_nonlinear_iterations = []
 
-nonlinear_iterations0 = data0[:,1]
-nonlinear_iterations1 = data1[:,1]
-nonlinear_iterations2 = data2[:,1]
-nonlinear_iterations3 = data3[:,1]
-assembly_time0 = data0[:,2]
-assembly_time1 = data1[:,2]
-assembly_time2 = data2[:,2]
-solver_time0 = data0[:,3]
-solver_time1 = data1[:,3]
-solver_time2 = data2[:,3]
+for i in np.arange(1, len(sys.argv)):
+    data = genfromtxt(sys.argv[i], delimiter=' ')
+    time_step_number.append(data[:,0])
+    number_of_nonlinear_iterations.append(data[:,1])
+    time_for_nonlinear_iterations.append(data[:,4])
 
-print('--- summary for ' + sys.argv[1] + ' ---')
-print('assembly time: ' + str(assembly_time0.sum()))
-print('solver time: ' + str(solver_time0.sum()))
-print('nonlinear iterations: ' + str(nonlinear_iterations0.sum()))
-print('time per nonlinear iterations: ' + str((assembly_time1.sum() + solver_time1.sum()) / nonlinear_iterations1.sum()))
-print('--- summary for ' + sys.argv[2] + ' ---')
-print('assembly time: ' + str(assembly_time1.sum()))
-print('solver time: ' + str(solver_time1.sum()))
-print('nonlinear iterations: ' + str(nonlinear_iterations1.sum()))
-print('time per nonlinear iterations: ' + str((assembly_time0.sum() + solver_time0.sum()) / nonlinear_iterations2.sum()))
-print('--- summary for ' + sys.argv[3] + ' ---')
-print('assembly time: ' + str(assembly_time2.sum()))
-print('solver time: ' + str(solver_time2.sum()))
-print('nonlinear iterations: ' + str(nonlinear_iterations2.sum()))
-print('time per nonlinear iterations: ' + str((assembly_time2.sum() + solver_time2.sum()) / nonlinear_iterations2.sum()))
+sublabels = ['bcgs+jacobi', 'gmres+jacobi', 'bcgs+hypre (boomeramg)', 'gmres+hypre (boomeramg)']
+linestyles = ['-', '-.', ':','--']
 
+# number of non-linear iterations
+fname='nonlinear_iterations_per_time_step_jureca'
 
 fig, ax = plt.subplots()
 ax.grid(True, linestyle='-.')
 
-pylab.plot(np.cumsum(nonlinear_iterations0), label=sys.argv[1])
-pylab.plot(np.cumsum(nonlinear_iterations1), label=sys.argv[2])
-pylab.plot(np.cumsum(nonlinear_iterations2), label=sys.argv[3])
-#pylab.plot(np.cumsum(nonlinear_iterations3), label=sys.argv[4])
-#pylab.plot(assembly_time, label='assembly time')
-#pylab.plot(solver_time, label='solver time')
-#pylab.plot((assembly_time0 + solver_time0)/nonlinear_iterations0, label=sys.argv[1])
-#pylab.plot((assembly_time1 + solver_time1)/nonlinear_iterations1, label=sys.argv[2])
-#pylab.plot((assembly_time2 + solver_time2)/nonlinear_iterations2, label=sys.argv[3])
+for i in np.arange(0, len(time_step_number)):
+    ax.plot(time_step_number[i], number_of_nonlinear_iterations[i],
+    label=sublabels[i], linestyle=linestyles[i])
 
 pylab.legend()
-pylab.xlabel("time step number")
-pylab.ylabel("cumulative nonlinear steps")
-plt.show()
+ax.set_xlabel("time step")
+ax.set_ylabel("number of non-linear iterations")
 
+fig.savefig(fname + '.pdf')
+
+# time for non-linear iterations
+fname1='time_for_nonlinear_iterations_per_time_step_jureca'
+
+fig1, ax1 = plt.subplots()
+ax1.grid(True, linestyle='-.')
+
+for i in np.arange(0, len(time_step_number)):
+    ax1.plot(time_step_number[i], time_for_nonlinear_iterations[i], label=sublabels[i], linestyle=linestyles[i])
+
+pylab.legend()
+ax1.set_xlabel("time step")
+ax1.set_ylabel("time for non-linear iterations")
+
+fig1.savefig(fname1 + '.pdf')
+
+# cumulative time for non-linear iterations
+fname2='cumulative_time_for_nonlinear_iterations_per_time_step_jureca'
+
+fig2, ax2 = plt.subplots()
+ax2.grid(True, linestyle='-.')
+
+for i in np.arange(0, len(time_step_number)):
+    ax2.plot(time_step_number[i], np.cumsum(time_for_nonlinear_iterations[i]),
+    label=sublabels[i], linestyle=linestyles[i])
+
+pylab.legend()
+ax2.set_xlabel("time step")
+ax2.set_ylabel("cumulative time for non-linear iterations")
+
+fig2.savefig(fname2 + '.pdf')
+
+###
+plt.show()

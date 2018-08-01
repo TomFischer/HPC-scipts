@@ -1,7 +1,8 @@
 #!/bin/sh
 
 declare -a PETSc_KSPSolvers=("bcgs" "gmres")
-declare -a PETSc_Preconditioners=("jacobi" "boomeramg")
+declare -a PETSc_Preconditioners=("jacobi" "hypre")
+declare -a PETSc_Preconditioner_Options=("" " -pc_hypre_type boomeramg")
 
 model_revision=$1
 tend=$2
@@ -11,6 +12,7 @@ runtime=0:15:00
 
 for solver in "${PETSc_KSPSolvers[@]}"
 do
+    pc_options_idx=0
     for pc in "${PETSc_Preconditioners[@]}"
     do
         project_file=Ra_795_fault_${solver}_${pc}_rtol_1e-10_atol_1e-10_tend_${tend}.prj
@@ -25,5 +27,6 @@ do
         sed --in-place "s/NNODES/${num_compute_nodes}/" ${project_dir}/${submit_script}
         sed --in-place "s/MODELREVISION/${model_revision}/" ${project_dir}/${submit_script}
         sed --in-place "s/RUNTIME/${runtime}/" ${project_dir}/${submit_script}
+        pc_options_idx+=1
     done
 done

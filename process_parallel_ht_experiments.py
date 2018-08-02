@@ -178,7 +178,8 @@ for time_step_number in range(1, number_of_time_steps):
         sum_assembly_time_step += time_step_item.assembly_time.mean()
         sum_solver_time_step += time_step_item.run_time_linear_solver.mean()
         sum_linear_iterations_time_step += time_step_item.number_of_linear_iterations
+        print(str(time_step_number) + ' ' + str(iteration) + ' ' + str(time_step_item.assembly_time.mean()) + ' ' + str(time_step_item.number_of_linear_iterations) + ' ' + str(time_step_item.run_time_linear_solver))
         with open(str(time_step_number) + '-' + str(iteration+1) + '.csv', 'w') as output:
             writer = csv.writer(output, delimiter='\n', lineterminator='\n')
             writer.writerows([time_step_item.convergence_history])
-    print(str(time_step_number) + ' ' + str(len(time_step_item_begins)) + ' ' + str(sum_assembly_time_step) + ' ' + str(sum_linear_iterations_time_step) + ' ' + str(sum_solver_time_step))
+    #print(str(time_step_number) + ' ' + str(len(time_step_item_begins)) + ' ' + str(sum_assembly_time_step) + ' ' + str(sum_linear_iterations_time_step) + ' ' + str(sum_solver_time_step))

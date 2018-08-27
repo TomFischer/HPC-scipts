@@ -395,7 +395,7 @@
             <name>general_linear_solver</name>
             <petsc>
                 <prefix/>
-                <parameters>-ksp_type LINEARSOLVER -pc_type PC -ksp_rtol 1e-10 -ksp_atol 1e-10 -ksp_max_it 30000 -ksp_converged_reason -ksp_monitor_true_residual -ksp_monitor</parameters>
+                <parameters>-ksp_type LINEARSOLVER -pc_type PC -ksp_rtol 1e-10 -ksp_atol 1e-10 -ksp_max_it 30000 -ksp_converged_reason -ksp_monitor</parameters>
             </petsc>
             <lis>-i bicgstab -p jacobi -tol 1e-10 -maxiter 30000</lis>
             <eigen>

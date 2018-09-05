@@ -1,0 +1,24 @@
+#!/bin/bash -x
+
+#$ -S /bin/bash
+#$ -l h_rt=RUNTIME
+
+#$ -o /work/$USER/$JOB_NAME-$JOB_ID-out.txt
+#$ -e /work/$USER/$JOB_NAME-$JOB_ID-err.txt
+
+#$ -l h_vmem=6G
+#$ -pe openmpi-orte-20 NTASKS
+
+#$ -m beas
+#$ -M thomas.fischer@ufz.de
+
+source ~/w/o/s/scripts/env/envinf1/petsc.sh
+
+sub_path=cube_ht_benchmark/MODELREVISION/$NSLOTS
+project_path=/data/ogs/$sub_path
+output_path=$WORK/$sub_path/results/$JOB_NAME/$JOB_ID/
+mkdir -p $output_path
+project_file=$project_path/PROJECTFILE
+mpirun -n $NSLOTS ~/w/o/br_petsc/bin/ogs $project_file -o $output_path
+mv $WORK/$JOB_NAME-$JOB_ID-out.txt $output_path/out.txt
+mv $WORK/$JOB_NAME-$JOB_ID-err.txt $output_path/err.txt

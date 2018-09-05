@@ -1,8 +1,8 @@
 #!/bin/sh
 
-declare -a PETSc_KSPSolvers=("bcgs" "gmres")
-declare -a PETSc_Preconditioners=("jacobi" "hypre")
-declare -a PETSc_Preconditioner_Options=("" " -pc_hypre_type boomeramg")
+declare -a PETSc_KSPSolvers=("bcgs" "gmres" "fgmres" "tfqmr")
+declare -a PETSc_Preconditioners=("jacobi" "hypre" "ilu")
+declare -a PETSc_Preconditioner_Options=("" " -pc_hypre_type boomeramg" "")
 
 # todo: -ksp_norm_type unpreconditioned
 

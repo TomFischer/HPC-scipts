@@ -22,7 +22,7 @@ for i in np.arange(1, len(sys.argv)):
     assembly_times.append(data[:,3])
     linear_solver_times.append(data[:,4])
 
-fig, ax = plt.subplots(figsize=(8,6))
+fig, ax = plt.subplots(figsize=(10,3.5))
 ax.grid(True, linestyle='-.')
 
 fname='run_times'
@@ -31,17 +31,18 @@ sublabels = ['MPI/OpenMP']
 linestyles = ['-', '-.', ':']
 
 for i in np.arange(0, len(assembly_times)):
-    ax.plot(number_of_mpi[i], assembly_times[i], '*', label='assembly ('+sublabels[i]+')') #linestyle=linestyles[i])
+    ax.plot(number_of_mpi[i], assembly_times[i], '*', label='assembly ('+sublabels[i]+')', linestyle=linestyles[i])
     #ax.plot(number_of_mpi[i], linear_solver_times[i], label='linear solver ('+sublabels[i]+')', linestyle=linestyles[i])
 
 pylab.legend()
-ax.set_xlabel("number of MPI processes")
-second_y_axis = ax.twiny()
+ax.set_xlabel("number of MPI processes, #MPI processes $\\times$ #OpenMP threads = 24")
+#second_y_axis = ax.twiny()
 ax.set_ylabel("run times in $s$")
-second_y_axis.set_xlabel("number of OpenMP threads")
-second_axis_ticks = number_of_openmp
-print(second_axis_ticks)
-second_y_axis.xaxis.set_major_locator(ticker.FixedLocator([12,8,6,4,3,1]))
+#second_y_axis.set_xlabel("number of OpenMP threads")
+#for i in np.arange(0, len(assembly_times)):
+#    second_y_axis.plot(number_of_openmp[i], assembly_times[i], label='assembly ('+sublabels[i]+')', linestyle=linestyles[i])
+
+#second_y_axis.xaxis.set_major_locator(ticker.FixedLocator([12,8,6,4,3,1]))
 #second_y_axis.xaxis.set_ticklabels([i[0] for i in second_axis_ticks])
 
 fig.savefig(fname + '.pdf')

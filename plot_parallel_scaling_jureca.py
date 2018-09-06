@@ -18,7 +18,7 @@ for i in np.arange(1, len(sys.argv)):
 
 idealy = np.arange(1, len(assembly_times[len(assembly_times)-1])+1)
 idealx = [x * 24 for x in idealy]
-fig, ax = plt.subplots(figsize=(5,3))
+fig, ax = plt.subplots(figsize=(5,3.5))
 ax.grid(True, linestyle='-.')
 
 fname='scaling_jureca'
@@ -32,9 +32,9 @@ for i in np.arange(0, len(assembly_times)):
     s = assembly_time[0]
     ax.plot(number_of_cores[i], [s / x for x in assembly_time], label='assembly ('+sublabels[i]+')', linestyle=linestyles[i])
 
-    linear_solver_time = linear_solver_times[i]
-    s = linear_solver_time[0]
-    ax.plot(number_of_cores[i], [s / x for x in linear_solver_time], label='linear solver ('+sublabels[i]+')', linestyle=linestyles[i])
+    #linear_solver_time = linear_solver_times[i]
+    #s = linear_solver_time[0]
+    #ax.plot(number_of_cores[i], [s / x for x in linear_solver_time], label='linear solver ('+sublabels[i]+')', linestyle=linestyles[i])
 
 pylab.legend()
 ax.set_xlabel("number of processes")

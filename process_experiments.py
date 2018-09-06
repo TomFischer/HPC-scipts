@@ -8,6 +8,18 @@ import glob
 #import pylab
 import matplotlib.pyplot as plt
 
+class ParallelEnvironment:
+    """Class to save parallel environment parameters"""
+    def __init__(self, number_cores_per_node, number_nodes, file_match_string):
+        self.number_cores_per_node = number_cores_per_node
+        self.number_cores = number_cores
+        self.file_match_string = file_match_string
+
+class Experiment:
+    """Class to store numerical experiment parameter"""
+    def __init__(self, file_match_string):
+        self.file_match_string = file_match_string
+
 # reading and parsing functions
 
 def tryMatch(line, regex, array):
@@ -37,22 +49,21 @@ def readSingleFile(filename):
         tryMatch(line, '.*time.*Solving process #0 took (.*) s in time step #1', solving_timestep1)
         tryMatch(line, '.*time.*Time step #1 took (.*) s', timestep1)
         tryMatch(line, '.*time.*Output of timestep 1 took (.*) s', output1)
-        #tryMatch(line, '.Output of timestep 1 took (.*) s', output1)
+        tryMatch(line, '.Output of timestep 1 took (.*) s', output1)
         tryMatch(line, '.*time.*Execution took (.*) s', execution)
 
-    # print('filename: ' + filename)
-    # print('length of array mesh: ' + str(len(mesh)))
-    # print('length of array assembly: ' + str(len(assembly)))
-    # print('length of array output0: ' + str(len(output0)))
-    # print('length of array dirichlet: ' + str(len(dirichlet)))
-    # print('length of array linear_solver: ' + str(len(linear_solver)))
-    # print('length of array iteration1: ' + str(len(iteration1)))
-    # print('length of array solving_timestep1: ' + str(len(solving_timestep1)))
-    # print('length of array timestep1: ' + str(len(timestep1)))
-    # print('length of array output1: ' + str(len(output1)))
-    # print('length of array execution: ' + str(len(execution)))
-
-    # print('output time step 1 : ', output1)
+    #print('filename: ' + filename)
+    #print('length of array mesh: ' + str(len(mesh)))
+    #print('length of array assembly: ' + str(len(assembly)))
+    #print('length of array output0: ' + str(len(output0)))
+    #print('length of array dirichlet: ' + str(len(dirichlet)))
+    #print('length of array linear_solver: ' + str(len(linear_solver)))
+    #print('length of array iteration1: ' + str(len(iteration1)))
+    #print('length of array solving_timestep1: ' + str(len(solving_timestep1)))
+    #print('length of array timestep1: ' + str(len(timestep1)))
+    #print('length of array output1: ' + str(len(output1)))
+    #print('length of array execution: ' + str(len(execution)))
+    #print('output time step 1 : ', output1)
 
     df = pd.DataFrame(data={
             'mesh' : mesh,
@@ -61,9 +72,9 @@ def readSingleFile(filename):
             'dirichlet' : dirichlet,
             'linear_solver' : linear_solver,
             'iteration1' : iteration1,
-            'solving_timestep1' : solving_timestep1,
-            'timestep1' : timestep1,
-            'output1' : output1,
+            #'solving_timestep1' : solving_timestep1,
+            #'timestep1' : timestep1,
+            #'output1' : output1,
             'execution' : execution
         })
     df.columns = pd.MultiIndex.from_product([['times'],df.columns.get_values()])
@@ -140,14 +151,14 @@ def evaluateExperimentsForFixedNumberOfProcesses(number, mesh, output0, assembly
     linear_solver.append(float(statistics.minima.mean()))
     statistics = computeStatisticsForExperiment(raw_data_frames, 'iteration1')
     iteration1.append(float(statistics.minima.mean()))
-    statistics = computeStatisticsForExperiment(raw_data_frames, 'solving_timestep1')
-    solving_timestep1.append(float(statistics.minima.mean()))
-    statistics = computeStatisticsForExperiment(raw_data_frames, 'timestep1')
-    timestep1.append(float(statistics.minima.mean()))
-    statistics = computeStatisticsForExperiment(raw_data_frames, 'output1')
-    output1.append(float(statistics.minima.mean()))
-    statistics = computeStatisticsForExperiment(raw_data_frames, 'execution')
-    execution.append(float(statistics.minima.mean()))
+    #statistics = computeStatisticsForExperiment(raw_data_frames, 'solving_timestep1')
+    #solving_timestep1.append(float(statistics.minima.mean()))
+    #statistics = computeStatisticsForExperiment(raw_data_frames, 'timestep1')
+    #timestep1.append(float(statistics.minima.mean()))
+    #statistics = computeStatisticsForExperiment(raw_data_frames, 'output1')
+    #output1.append(float(statistics.minima.mean()))
+    #statistics = computeStatisticsForExperiment(raw_data_frames, 'execution')
+    #execution.append(float(statistics.minima.mean()))
 
 cells = []
 partitions = []
@@ -162,6 +173,8 @@ solving_timestep1 = []
 timestep1 = []
 execution = []
 
+node_list = [1, 2, 3, 4, 5, 6, 7]
+env = ParallelEnvironment(20, node_list, '.*x([0-9]+)/([0-9]+)/.*out')
 # EVE
 evaluateExperimentsForFixedNumberOfProcesses(20, mesh, output0, assembly, dirichlet, linear_solver, iteration1, solving_timestep1, timestep1, output1, execution, cells, partitions)
 evaluateExperimentsForFixedNumberOfProcesses(40, mesh, output0, assembly, dirichlet, linear_solver, iteration1, solving_timestep1, timestep1, output1, execution, cells, partitions)
@@ -184,9 +197,13 @@ evaluateExperimentsForFixedNumberOfProcesses(140, mesh, output0, assembly, diric
 #evaluateExperimentsForFixedNumberOfProcesses(108, mesh, output0, assembly, dirichlet, linear_solver, iteration1, solving_timestep1, timestep1, output1, execution, cells, partitions)
 #evaluateExperimentsForFixedNumberOfProcesses(144, mesh, output0, assembly, dirichlet, linear_solver, iteration1, solving_timestep1, timestep1, output1, execution, cells, partitions)
 
+# EVE
+idealy = np.arange(1,8)
+idealx = [x * 20 for x in idealy]
+
 # JURECA
-idealy = np.arange(1,6)
-idealx = [x * 24 for x in idealy]
+#idealy = np.arange(1,6)
+#idealx = [x * 24 for x in idealy]
 
 # mistral
 # idealy = np.arange(1,5)
@@ -202,8 +219,8 @@ ax.plot(partitions, [s / x for x in assembly], label='assembly')
 s = linear_solver[0]
 ax.plot(partitions, [s / x for x in linear_solver], label='linear solver')
 
-s = mesh[0]
-ax.plot(partitions, [s / x for x in mesh], label='reading mesh')
+#s = mesh[0]
+#ax.plot(partitions, [s / x for x in mesh], label='reading mesh')
 
 #s = output0[0]
 #ax.plot(partitions, [s / x for x in output0], label='output0')
@@ -216,8 +233,10 @@ ax.plot(partitions, [s / x for x in mesh], label='reading mesh')
 
 ax.legend()
 ax.set_xlabel("number of processes")
+# EVE
+ax.set_ylabel("scaling $\\frac{t(N)}{t(20)}$")
 # JURECA and TAURUS
-ax.set_ylabel("scaling $\\frac{t(N)}{t(24)}$")
+#ax.set_ylabel("scaling $\\frac{t(N)}{t(24)}$")
 # mistral
 # ax.set_ylabel("scaling $\\frac{t(N)}{t(36)}$")
 ax.grid()

@@ -10,8 +10,8 @@ model_revision=$1
 tend=$2
 ntasks=$3
 temp_out_dir=$4
-project_dir=$5
-runtime=0:15:00
+project_dir=$5/${model_revision}/${ntasks}
+runtime=$6
 
 for solver in "${PETSc_KSPSolvers[@]}"
 do

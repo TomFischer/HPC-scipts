@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <OpenGeoSysProject>
-    <mesh>Ra_795_fault_with_ic_on_fault.vtu</mesh>
-    <geometry>Ra_795_fault.gml</geometry>
+    <meshes>
+        <mesh>Ra_795_fault_with_ic_on_fault.vtu</mesh>
+        <mesh>Ra_795_fault_Top.vtu</mesh>
+        <mesh>Ra_795_fault_Bottom.vtu</mesh>
+        <mesh>Ra_795_fault_POINT0.vtu</mesh>
+        <mesh>Ra_795_fault_POINT1.vtu</mesh>
+        <mesh>Ra_795_fault_POINT2.vtu</mesh>
+        <mesh>Ra_795_fault_POINT3.vtu</mesh>
+    </meshes>
     <processes>
         <process>
             <name>ConstViscosityThermalConvection</name>
@@ -336,14 +343,12 @@
             <initial_condition>T0</initial_condition>
             <boundary_conditions>
                 <boundary_condition>
-                    <geometrical_set>Ra_795_fault</geometrical_set>
-                    <geometry>Top</geometry>
+                    <mesh>Ra_795_fault_Top</mesh>
                     <type>Dirichlet</type>
                     <parameter>t_Dirichlet_top</parameter>
                 </boundary_condition>
                 <boundary_condition>
-                    <geometrical_set>Ra_795_fault</geometrical_set>
-                    <geometry>Bottom</geometry>
+                    <mesh>Ra_795_fault_Bottom</mesh>
                     <type>Dirichlet</type>
                     <parameter>t_Dirichlet_bottom</parameter>
                 </boundary_condition>
@@ -356,26 +361,22 @@
             <initial_condition>P0</initial_condition>
             <boundary_conditions>
                 <boundary_condition>
-                    <geometrical_set>Ra_795_fault</geometrical_set>
-                    <geometry>POINT0</geometry>
+                    <mesh>Ra_795_fault_POINT0</mesh>
                     <type>Dirichlet</type>
                     <parameter>p_Dirichlet_POINT0</parameter>
                 </boundary_condition>
                 <boundary_condition>
-                    <geometrical_set>Ra_795_fault</geometrical_set>
-                    <geometry>POINT1</geometry>
+                    <mesh>Ra_795_fault_POINT1</mesh>
                     <type>Dirichlet</type>
                     <parameter>p_Dirichlet_POINT1</parameter>
                 </boundary_condition>
                 <boundary_condition>
-                    <geometrical_set>Ra_795_fault</geometrical_set>
-                    <geometry>POINT2</geometry>
+                    <mesh>Ra_795_fault_POINT2</mesh>
                     <type>Dirichlet</type>
                     <parameter>p_Dirichlet_POINT2</parameter>
                 </boundary_condition>
                 <boundary_condition>
-                    <geometrical_set>Ra_795_fault</geometrical_set>
-                    <geometry>POINT3</geometry>
+                    <mesh>Ra_795_fault_POINT3</mesh>
                     <type>Dirichlet</type>
                     <parameter>p_Dirichlet_POINT3</parameter>
                 </boundary_condition>

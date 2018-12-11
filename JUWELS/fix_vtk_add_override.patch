@@ -1,0 +1,10 @@
+diff --git a/IO/MPIParallel/CMakeLists.txt b/IO/MPIParallel/CMakeLists.txt
+index c940357..8b948c7 100644
+--- a/IO/MPIParallel/CMakeLists.txt
++++ b/IO/MPIParallel/CMakeLists.txt
+@@ -1,4 +1,5 @@
+ include(vtkMPI)
++include(vtkObjectFactory)
+ 
+ # We don't build the parallel readers on windows
+ # because there's problems with the MPI_File_open()

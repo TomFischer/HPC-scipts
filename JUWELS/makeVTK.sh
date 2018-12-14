@@ -4,6 +4,11 @@ module load GCC CMake ParaStationMPI Python Eigen PETSc Boost
 
 base_working_dir=w
 
+if [ "$#" -eq 1 ]
+then
+    base_working_dir=$1
+fi
+
 # create directory for vtk
 vtk_dir=vtk
 mkdir -p $base_working_dir/$vtk_dir

@@ -174,7 +174,7 @@ for time_step in range(1, number_of_time_steps):
     time_step_items_begins.append(time_step_item_begins)
     time_step_items_ends.append(time_step_item_ends)
 
-print('time_step non-linear_iteration_number assembly_time_min assembly_time_max assembly_time_mean assembly_time_var number_linear_iterations linear_iterations_time_min linear_iterations_time_max linear_iterations_time_mean linear_iterations_time_var')
+print('time_step non-linear_iteration_number assembly_time number_linear_iterations linear_iterations_time')
 for time_step_number in range(1, number_of_time_steps):
     time_step_item_begins = time_step_items_begins[time_step_number-1]
     time_step_item_ends = time_step_items_ends[time_step_number-1]
@@ -189,7 +189,9 @@ for time_step_number in range(1, number_of_time_steps):
         sum_assembly_time_step += time_step_item.assembly_time.mean()
         sum_solver_time_step += time_step_item.run_time_linear_solver.mean()
         sum_linear_iterations_time_step += time_step_item.number_of_linear_iterations
-        print(str(time_step_number) + ' ' + str(iteration+1) + ' ' + str(time_step_item.assembly_time.min()) + ' ' + str(time_step_item.assembly_time.max()) + ' ' + str(time_step_item.assembly_time.mean()) + ' ' + str(time_step_item.assembly_time.var()) + ' ' + str(time_step_item.number_of_linear_iterations) + ' ' + str(time_step_item.run_time_linear_solver.min()) + ' ' + str(time_step_item.run_time_linear_solver.max()) + ' ' + str(time_step_item.run_time_linear_solver.mean()) + ' ' + str(time_step_item.run_time_linear_solver.var()))
+        for i in range(0, len(time_step_item.assembly_time)):
+            print(str(time_step_number) + ' ' + str(iteration+1) + ' ' + str(time_step_item.assembly_time[i]) + ' ' + str(time_step_item.number_of_linear_iterations) + ' ' + str(time_step_item.run_time_linear_solver[i]))
+        # print(str(time_step_number) + ' ' + str(iteration+1) + ' ' + str(time_step_item.assembly_time.min()) + ' ' + str(time_step_item.assembly_time.max()) + ' ' + str(time_step_item.assembly_time.mean()) + ' ' + str(time_step_item.assembly_time.var()) + ' ' + str(time_step_item.number_of_linear_iterations) + ' ' + str(time_step_item.run_time_linear_solver.min()) + ' ' + str(time_step_item.run_time_linear_solver.max()) + ' ' + str(time_step_item.run_time_linear_solver.mean()) + ' ' + str(time_step_item.run_time_linear_solver.var()))
 #        with open(str(time_step_number) + '-' + str(iteration+1) + '.csv', 'w') as output:
 #            writer = csv.writer(output, delimiter='\n', lineterminator='\n')
 #            writer.writerows([time_step_item.convergence_history])

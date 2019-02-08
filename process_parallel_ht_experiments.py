@@ -137,9 +137,9 @@ def getTimeStepRange(lines, line_number_begin, number_of_ranks, time_step_number
             time_step_end_cnt += 1
         if time_step_end_cnt == number_of_ranks:
             time_step_end = i+1
-            logging.debug('time step ' + str(time_step_number) + ' in range [' + str(time_step_begin) + ', ' + str(time_step_end) + ')')
+            #logging.debug('time step ' + str(time_step_number) + ' in range [' + str(time_step_begin) + ', ' + str(time_step_end) + ')')
             return time_step_begin, time_step_end
-    logging.debug('time step ' + str(time_step_number) + ' in range [' + str(time_step_begin) + ', ' + str(time_step_end) + ')')
+    #logging.debug('time step ' + str(time_step_number) + ' in range [' + str(time_step_begin) + ', ' + str(time_step_end) + ')')
     return time_step_begin, len(lines)
 
 
@@ -169,7 +169,7 @@ for time_step_number in range(1, number_of_time_steps):
 time_step_items_begins = []
 time_step_items_ends = []
 for time_step in range(1, number_of_time_steps):
-    logging.debug('*** parsing item of time step ' + str(time_step) + ' ***')
+#    logging.debug('*** parsing item of time step ' + str(time_step) + ' ***')
     time_step_item_begins, time_step_item_ends = parseTimeStep(lines, time_step_begins, time_step_ends, time_step, number_of_ranks)
     time_step_items_begins.append(time_step_item_begins)
     time_step_items_ends.append(time_step_item_ends)

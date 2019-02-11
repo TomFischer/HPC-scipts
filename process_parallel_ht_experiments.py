@@ -14,6 +14,7 @@ class TimeStepItem:
         self.assembly_time = np.zeros((number_processes))
         self.number_of_linear_iterations = -1
         self.run_time_linear_solver = np.zeros((number_processes))
+        self.time_nonlinear_iteration = np.zeros((number_processes))
         self.convergence_history = []
 
 class TimeStep:
@@ -59,6 +60,9 @@ def parseTimeStepItem(lines, begin, end, time_step_item):
         pos, float_value = tryMatchValue(line, '\[(.*)\] .*time.* Linear solver took (.*) s')
         if pos != -1:
             time_step_item.run_time_linear_solver[pos] = float_value
+        pos, float_value = tryMatchValue(line, '\[(.*)\] .*time.* Iteration #.* took (.*) s.')
+        if pos != -1:
+            time_step_item.time_nonlinear_iteration[pos] = float_value
         match = re.search('.* KSP Residual norm (.*)', line)
         if match:
             time_step_item.convergence_history.append(float(match.group(1)))
@@ -174,7 +178,7 @@ for time_step in range(1, number_of_time_steps):
     time_step_items_begins.append(time_step_item_begins)
     time_step_items_ends.append(time_step_item_ends)
 
-print('time_step non-linear_iteration_number assembly_time number_linear_iterations linear_iterations_time')
+print('time_step non-linear_iteration_number assembly_time number_linear_iterations linear_iterations_time nonlinear_iteration_time')
 for time_step_number in range(1, number_of_time_steps):
     time_step_item_begins = time_step_items_begins[time_step_number-1]
     time_step_item_ends = time_step_items_ends[time_step_number-1]
@@ -190,7 +194,7 @@ for time_step_number in range(1, number_of_time_steps):
         sum_solver_time_step += time_step_item.run_time_linear_solver.mean()
         sum_linear_iterations_time_step += time_step_item.number_of_linear_iterations
         for i in range(0, len(time_step_item.assembly_time)):
-            print(str(time_step_number) + ' ' + str(iteration+1) + ' ' + str(time_step_item.assembly_time[i]) + ' ' + str(time_step_item.number_of_linear_iterations) + ' ' + str(time_step_item.run_time_linear_solver[i]))
+            print(str(time_step_number) + ' ' + str(iteration+1) + ' ' + str(time_step_item.assembly_time[i]) + ' ' + str(time_step_item.number_of_linear_iterations) + ' ' + str(time_step_item.run_time_linear_solver[i]) + ' ' + str(time_step_item.time_nonlinear_iteration[i]))
         # print(str(time_step_number) + ' ' + str(iteration+1) + ' ' + str(time_step_item.assembly_time.min()) + ' ' + str(time_step_item.assembly_time.max()) + ' ' + str(time_step_item.assembly_time.mean()) + ' ' + str(time_step_item.assembly_time.var()) + ' ' + str(time_step_item.number_of_linear_iterations) + ' ' + str(time_step_item.run_time_linear_solver.min()) + ' ' + str(time_step_item.run_time_linear_solver.max()) + ' ' + str(time_step_item.run_time_linear_solver.mean()) + ' ' + str(time_step_item.run_time_linear_solver.var()))
 #        with open(str(time_step_number) + '-' + str(iteration+1) + '.csv', 'w') as output:
 #            writer = csv.writer(output, delimiter='\n', lineterminator='\n')

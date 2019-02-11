@@ -22,16 +22,18 @@ while i < len(df.index):
         time_step_start = time_step_end
         time_step_end = i
         act_time_step_frame = df.truncate(before=time_step_start, after=time_step_end-1, axis=0)
-        print('time step #' + str(current_time_step) + ': assembly_time: ' + str(act_time_step_frame['assembly_time'].min()) + ', ' + str(act_time_step_frame['assembly_time'].max()) + ', ' + str(act_time_step_frame['assembly_time'].mean()) + ', ' + str(act_time_step_frame['assembly_time'].var()))
-        print('time step #' + str(current_time_step) + ': linear solver time: ' + str(act_time_step_frame['linear_iterations_time'].min()) + ', ' + str(act_time_step_frame['linear_iterations_time'].max()) + ', ' + str(act_time_step_frame['linear_iterations_time'].mean()) + ', ' + str(act_time_step_frame['linear_iterations_time'].var()))
+        #print('time step #' + str(current_time_step) + ': assembly_time: ' + str(act_time_step_frame['assembly_time'].min()) + ', ' + str(act_time_step_frame['assembly_time'].max()) + ', ' + str(act_time_step_frame['assembly_time'].mean()) + ', ' + str(act_time_step_frame['assembly_time'].var()))
+        #print('time step #' + str(current_time_step) + ': linear solver time: ' + str(act_time_step_frame['linear_iterations_time'].min()) + ', ' + str(act_time_step_frame['linear_iterations_time'].max()) + ', ' + str(act_time_step_frame['linear_iterations_time'].mean()) + ', ' + str(act_time_step_frame['linear_iterations_time'].var()))
+        print('time step #' + str(current_time_step) + ': non-linear iteration time: ' + str(act_time_step_frame['nonlinear_iteration_time'].min()) + ', ' + str(act_time_step_frame['nonlinear_iteration_time'].max()) + ', ' + str(act_time_step_frame['nonlinear_iteration_time'].mean()) + ', ' + str(act_time_step_frame['nonlinear_iteration_time'].var()))
         current_time_step = df.iloc[i,0]
     i = i + 1
 
 time_step_start = time_step_end
 time_step_end = i
 act_time_step_frame = df.truncate(before=time_step_start, after=time_step_end-1, axis=0)
-print('time step #' + str(current_time_step) + ': assembly_time: ' + str(act_time_step_frame['assembly_time'].min()) + ', ' + str(act_time_step_frame['assembly_time'].max()) + ', ' + str(act_time_step_frame['assembly_time'].mean()) + ', ' + str(act_time_step_frame['assembly_time'].var()))
-print('time step #' + str(current_time_step) + ': linear solver time: ' + str(act_time_step_frame['linear_iterations_time'].min()) + ', ' + str(act_time_step_frame['linear_iterations_time'].max()) + ', ' + str(act_time_step_frame['linear_iterations_time'].mean()) + ', ' + str(act_time_step_frame['linear_iterations_time'].var()))
+#print('time step #' + str(current_time_step) + ': assembly_time: ' + str(act_time_step_frame['assembly_time'].min()) + ', ' + str(act_time_step_frame['assembly_time'].max()) + ', ' + str(act_time_step_frame['assembly_time'].mean()) + ', ' + str(act_time_step_frame['assembly_time'].var()))
+#print('time step #' + str(current_time_step) + ': linear solver time: ' + str(act_time_step_frame['linear_iterations_time'].min()) + ', ' + str(act_time_step_frame['linear_iterations_time'].max()) + ', ' + str(act_time_step_frame['linear_iterations_time'].mean()) + ', ' + str(act_time_step_frame['linear_iterations_time'].var()))
+print('time step #' + str(current_time_step) + ': non-linear iteration time: ' + str(act_time_step_frame['nonlinear_iteration_time'].min()) + ', ' + str(act_time_step_frame['nonlinear_iteration_time'].max()) + ', ' + str(act_time_step_frame['nonlinear_iteration_time'].mean()) + ', ' + str(act_time_step_frame['nonlinear_iteration_time'].var()))
 #print('current time step ' + str(current_time_step) + ' [' + str(time_step_start) + ', ' + str(time_step_end) + ')')
 
 #print(df.iloc[lambda x: x.index < 10])

@@ -14,7 +14,7 @@ class TimeStepItem:
         self.assembly_time = np.zeros((number_processes))
         self.number_of_linear_iterations = -1
         self.run_time_linear_solver = np.zeros((number_processes))
-        self.time_nonlinear_iteration = np.empty((number_processes)) * numpy.nan
+        self.time_nonlinear_iteration = np.empty((number_processes)) * np.nan
         self.convergence_history = []
 
 class TimeStep:

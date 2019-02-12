@@ -14,7 +14,7 @@ class TimeStepItem:
         self.assembly_time = np.zeros((number_processes))
         self.number_of_linear_iterations = -1
         self.run_time_linear_solver = np.zeros((number_processes))
-        self.time_nonlinear_iteration = np.empty((number_processes)) * np.nan
+        self.time_linear_iteration = np.empty((number_processes)) * np.nan
         self.convergence_history = []
 
 class TimeStep:
@@ -47,7 +47,7 @@ def tryMatchValue(line, regex):
     else:
         return -1, 0.0
 
-def parseTimeStepItem(lines, begin, end, time_step_item):
+def parseTimeStepItem(lines, iteration, begin, end, time_step_item):
     for i in range(begin, end):
         line = lines[i]
         float_value = 0.0
@@ -60,9 +60,9 @@ def parseTimeStepItem(lines, begin, end, time_step_item):
         pos, float_value = tryMatchValue(line, '\[(.*)\] .*time.* Linear solver took (.*) s')
         if pos != -1:
             time_step_item.run_time_linear_solver[pos] = float_value
-        pos, float_value = tryMatchValue(line, '\[(.*)\] \[time\] Iteration .* took (.*) s.')
+        pos, float_value = tryMatchValue(line, '\[(.*)\] \[time\] Iteration #' + str(iteration) + ' took (.*) s.')
         if pos != -1:
-            time_step_item.time_nonlinear_iteration[pos] = float_value
+            time_step_item.time_linear_iteration[pos] = float_value
         match = re.search('.* KSP Residual norm (.*)', line)
         if match:
             time_step_item.convergence_history.append(float(match.group(1)))
@@ -73,7 +73,7 @@ def parseTimeStepItem(lines, begin, end, time_step_item):
 def parseTimeStepItemRange(lines, time_step_number, time_step_begin, time_step_end, time_step_item_number, number_of_ranks):
     # search strings
     begin_expression = '.* Assembly took *.'
-    end_expression = '.* Time step #' + str(time_step_number) + ' took'
+    end_expression = '.* Iteration #' + str(time_step_item_number) + ' took'
 
     time_step_item_begin = -1 # line number the time step item begin
     time_step_item_end = -1 # line number the time step item
@@ -89,18 +89,20 @@ def parseTimeStepItemRange(lines, time_step_number, time_step_begin, time_step_e
         match = re.search(begin_expression, line)
         if match:
             time_step_item_begin_counter += 1
-            if time_step_item_begin_counter == (time_step_item_number-1) * number_of_ranks + 1:
+            if time_step_item_begin_counter == number_of_ranks:
                 time_step_item_begin = i
                 continue
         # search for the time step item end
         match = re.search(end_expression, line)
         if match:
             time_step_item_end_counter += 1
-            if time_step_item_end_counter == time_step_item_number * number_of_ranks:
-                time_step_item_end = i
+            if time_step_item_end_counter == number_of_ranks:
+                time_step_item_end = i+1
+                logging.debug('valid: search ' + end_expression + ': time step ' + str(time_step_number) + ' [' + str(time_step_begin) + ', ' + str(time_step_end) + ') -> ' + str(time_step_item_begin) + ', ' + str(time_step_item_end) + ', time_step_item_end_counter: ' + str(time_step_item_end_counter) + ' expected to be ' + str(number_of_ranks))
                 return time_step_item_begin, time_step_item_end
 
     # if the function returns here the time step item is not correctly read
+    logging.debug('time step ' + str(time_step_number) + ' [' + str(time_step_begin) + ', ' + str(time_step_end) + ') -> ' + str(time_step_item_begin) + ', ' + str(time_step_item_end) + ', time_step_item_end_counter: ' + str(time_step_item_end_counter) + ' expected to be ' + str(number_of_ranks))
     return time_step_item_begin, time_step_item_end
 
 # returns the first and the last line of the time step
@@ -110,6 +112,8 @@ def parseTimeStep(lines, time_step_begins, time_step_ends, time_step_number, num
     time_step_item_ends = []
     # parse the first time step item
     time_step_item_begin, time_step_item_end = parseTimeStepItemRange(lines, time_step_number, time_step_begins[time_step_number-1], time_step_ends[time_step_number-1], time_step_item_number, number_of_ranks)
+    logging.debug('parseTimeStepItemRange(lines, ' + str(time_step_number) + ', ' + str(time_step_begins[time_step_number-1]) + ', ' + str(time_step_ends[time_step_number-1]) + ', ' + str(time_step_item_number) + ', ' + str(number_of_ranks) + ') -> ' + str(time_step_item_begin) + ', ' + str(time_step_item_end))
+
     # if the line number of the time step item end marker > -1 all is fine
     if time_step_item_end > -1:
         time_step_item_begins.append(time_step_item_begin)
@@ -120,6 +124,7 @@ def parseTimeStep(lines, time_step_begins, time_step_ends, time_step_number, num
     time_step_item_number += 1
     while time_step_item_end > -1:
         time_step_item_begin, time_step_item_end = parseTimeStepItemRange(lines, time_step_number, time_step_begins[time_step_number-1], time_step_ends[time_step_number-1], time_step_item_number, number_of_ranks)
+        logging.debug('parseTimeStepItemRange(lines, ' + str(time_step_number) + ', ' + str(time_step_begins[time_step_number-1]) + ', ' + str(time_step_ends[time_step_number-1]) + ', ' + str(time_step_item_number) + ', ' + str(number_of_ranks) + ') -> ' + str(time_step_item_begin) + ', ' + str(time_step_item_end))
         if time_step_item_end > -1:
             time_step_item_begins.append(time_step_item_begin)
             time_step_item_ends.append(time_step_item_end)
@@ -166,6 +171,7 @@ for time_step_number in range(1, number_of_time_steps):
     line_number_begin = time_step_begin
     time_step_begins.append(time_step_begin)
     time_step_ends.append(time_step_end)
+    logging.debug('time step ' + str(time_step_number) + ' [' + str(time_step_begin) + ', ' + str(time_step_end) + ')')
 
 # determine the ranges for the nonlinear iterations (time step items)
 time_step_items_begins = []
@@ -186,12 +192,12 @@ for time_step_number in range(1, number_of_time_steps):
         time_step_item = TimeStepItem(number_of_ranks)
         begin = time_step_item_begins[iteration]
         end = time_step_item_ends[iteration]
-        parseTimeStepItem(lines, begin, end, time_step_item)
+        parseTimeStepItem(lines, iteration+1, begin, end, time_step_item)
         sum_assembly_time_step += time_step_item.assembly_time.mean()
         sum_solver_time_step += time_step_item.run_time_linear_solver.mean()
         sum_linear_iterations_time_step += time_step_item.number_of_linear_iterations
         for i in range(0, len(time_step_item.assembly_time)):
-            print(str(time_step_number) + ' ' + str(iteration+1) + ' ' + str(time_step_item.assembly_time[i]) + ' ' + str(time_step_item.number_of_linear_iterations) + ' ' + str(time_step_item.run_time_linear_solver[i]) + ' ' + str(time_step_item.time_nonlinear_iteration[i]))
+            print(str(time_step_number) + ' ' + str(iteration+1) + ' ' + str(time_step_item.assembly_time[i]) + ' ' + str(time_step_item.number_of_linear_iterations) + ' ' + str(time_step_item.run_time_linear_solver[i]) + ' ' + str(time_step_item.time_linear_iteration[i]))
 
         # print(str(time_step_number) + ' ' + str(iteration+1) + ' ' + str(time_step_item.assembly_time.min()) + ' ' + str(time_step_item.assembly_time.max()) + ' ' + str(time_step_item.assembly_time.mean()) + ' ' + str(time_step_item.assembly_time.var()) + ' ' + str(time_step_item.number_of_linear_iterations) + ' ' + str(time_step_item.run_time_linear_solver.min()) + ' ' + str(time_step_item.run_time_linear_solver.max()) + ' ' + str(time_step_item.run_time_linear_solver.mean()) + ' ' + str(time_step_item.run_time_linear_solver.var()))
 #        with open(str(time_step_number) + '-' + str(iteration+1) + '.csv', 'w') as output:

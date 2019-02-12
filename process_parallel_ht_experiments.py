@@ -60,7 +60,7 @@ def parseTimeStepItem(lines, begin, end, time_step_item):
         pos, float_value = tryMatchValue(line, '\[(.*)\] .*time.* Linear solver took (.*) s')
         if pos != -1:
             time_step_item.run_time_linear_solver[pos] = float_value
-        pos, float_value = tryMatchValue(line, '\[(.*)\] .*time.* Iteration #.* took (.*) s.')
+        pos, float_value = tryMatchValue(line, '\[(.*)\] \[time\] Iteration .* took (.*) s.')
         if pos != -1:
             time_step_item.time_nonlinear_iteration[pos] = float_value
         match = re.search('.* KSP Residual norm (.*)', line)
@@ -70,10 +70,11 @@ def parseTimeStepItem(lines, begin, end, time_step_item):
         logging.debug('could not determine the number of linear iterations in time step item in the range [' + str(begin) + ', ' + str(end) + ')')
 
 # returns the first and the last line of the time step item
-def parseTimeStepItemRange(lines, time_step_begin, time_step_end, time_step_item_number, number_of_ranks):
+def parseTimeStepItemRange(lines, time_step_number, time_step_begin, time_step_end, time_step_item_number, number_of_ranks):
+    logging.debug('parseTimeStepItemRange: searching time step item number ' + str(time_step_item_number) + ' in range [' + str(time_step_begin) + ', ' + str(time_step_end) + ')')
     # search strings
     begin_expression = '.* Assembly took *.'
-    end_expression = '.* Iteration #*.'
+    end_expression = '.* Time step #' + str(time_step_number) + ' took'
 
     time_step_item_begin = -1 # line number the time step item begin
     time_step_item_end = -1 # line number the time step item
@@ -109,7 +110,7 @@ def parseTimeStep(lines, time_step_begins, time_step_ends, time_step_number, num
     time_step_item_begins = []
     time_step_item_ends = []
     # parse the first time step item
-    time_step_item_begin, time_step_item_end = parseTimeStepItemRange(lines, time_step_begins[time_step_number-1], time_step_ends[time_step_number-1], time_step_item_number, number_of_ranks)
+    time_step_item_begin, time_step_item_end = parseTimeStepItemRange(lines, time_step_number, time_step_begins[time_step_number-1], time_step_ends[time_step_number-1], time_step_item_number, number_of_ranks)
     # if the line number of the time step item end marker > -1 all is fine
     if time_step_item_end > -1:
         time_step_item_begins.append(time_step_item_begin)
@@ -119,7 +120,7 @@ def parseTimeStep(lines, time_step_begins, time_step_ends, time_step_number, num
 
     time_step_item_number += 1
     while time_step_item_end > -1:
-        time_step_item_begin, time_step_item_end = parseTimeStepItemRange(lines, time_step_begins[time_step_number-1], time_step_ends[time_step_number-1], time_step_item_number, number_of_ranks)
+        time_step_item_begin, time_step_item_end = parseTimeStepItemRange(lines, time_step_number, time_step_begins[time_step_number-1], time_step_ends[time_step_number-1], time_step_item_number, number_of_ranks)
         if time_step_item_end > -1:
             time_step_item_begins.append(time_step_item_begin)
             time_step_item_ends.append(time_step_item_end)
@@ -195,6 +196,7 @@ for time_step_number in range(1, number_of_time_steps):
         sum_linear_iterations_time_step += time_step_item.number_of_linear_iterations
         for i in range(0, len(time_step_item.assembly_time)):
             print(str(time_step_number) + ' ' + str(iteration+1) + ' ' + str(time_step_item.assembly_time[i]) + ' ' + str(time_step_item.number_of_linear_iterations) + ' ' + str(time_step_item.run_time_linear_solver[i]) + ' ' + str(time_step_item.time_nonlinear_iteration[i]))
+
         # print(str(time_step_number) + ' ' + str(iteration+1) + ' ' + str(time_step_item.assembly_time.min()) + ' ' + str(time_step_item.assembly_time.max()) + ' ' + str(time_step_item.assembly_time.mean()) + ' ' + str(time_step_item.assembly_time.var()) + ' ' + str(time_step_item.number_of_linear_iterations) + ' ' + str(time_step_item.run_time_linear_solver.min()) + ' ' + str(time_step_item.run_time_linear_solver.max()) + ' ' + str(time_step_item.run_time_linear_solver.mean()) + ' ' + str(time_step_item.run_time_linear_solver.var()))
 #        with open(str(time_step_number) + '-' + str(iteration+1) + '.csv', 'w') as output:
 #            writer = csv.writer(output, delimiter='\n', lineterminator='\n')

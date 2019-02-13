@@ -54,15 +54,19 @@ def parseTimeStepItem(lines, iteration, begin, end, time_step_item):
         pos, float_value = tryMatchValue(line, '\[(.*)\] .*time.* Assembly took (.*) s.')
         if pos != -1:
             time_step_item.assembly_time[pos] = float_value
+            continue
         number_of_linear_iterations = tryMatchInt(line, '.*converged in (.*) iterations.*')
         if number_of_linear_iterations != -1:
             time_step_item.number_of_linear_iterations = number_of_linear_iterations
+            continue
         pos, float_value = tryMatchValue(line, '\[(.*)\] .*time.* Linear solver took (.*) s')
         if pos != -1:
             time_step_item.run_time_linear_solver[pos] = float_value
+            continue
         pos, float_value = tryMatchValue(line, '\[(.*)\] \[time\] Iteration #' + str(iteration) + ' took (.*) s.')
         if pos != -1:
             time_step_item.time_linear_iteration[pos] = float_value
+            continue
         match = re.search('.* KSP Residual norm (.*)', line)
         if match:
             time_step_item.convergence_history.append(float(match.group(1)))

@@ -15,10 +15,10 @@ mkdir -p $base_working_dir/$ogs_dir
 cd $base_working_dir/$ogs_dir
 
 git lfs clone git@github.com:ufz/ogs.git s
+cd s
 git remote add ogs-bgr git@gitlab.opengeosys.org:ufz-bgr/ogs.git
 
 # install git large filesystem
-cd s
 git lfs install
 git lfs fetch
 cd ..

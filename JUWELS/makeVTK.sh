@@ -15,7 +15,7 @@ mkdir -p $base_working_dir/$vtk_dir
 cd $base_working_dir/$vtk_dir
 git clone https://gitlab.kitware.com/vtk/vtk.git vtk-8
 cd vtk-8
-git checkout v8.1.2
+git checkout v8.2.0
 # the patch is needed
 git apply ../../../w/HPC-scripts/JUWELS/fix_vtk_add_override.patch
 mkdir build_release

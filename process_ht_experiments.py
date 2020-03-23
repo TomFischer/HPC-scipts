@@ -49,7 +49,6 @@ class TimeStep:
         self.linear_steps.append(item)
 
     def write(self):
-        print('+++ Time step: ' + str(self.time_step_number))
         for linear_step in self.linear_steps:
             linear_step.write()
         print('+++ Time step: ' + str(self.time_step_number)
@@ -117,10 +116,8 @@ def parseLinearSteps(iss, time_step):
 
 def parseTimeSteps(iss, time_steps):
     for line in iss:
-        #print('*** parseTimeSteps ' + line)
         time_step_number = tryMatch(line, '.*=== Time stepping at step \#(.*) and time .* with step size .*')
         if time_step_number != -1:
-            #print('### parsed time step number: ' + str(int(time_step_number)))
             time_step = TimeStep(int(time_step_number))
             parseLinearSteps(iss, time_step)
             time_steps.append(time_step)
@@ -128,8 +125,11 @@ def parseTimeSteps(iss, time_steps):
         output_time = tryMatch(line, '.* Output of timestep .* took (.*) s')
         if output_time != -1.0:
             time_step.output_time = output_time
-            #print('xxx continue loop of parseTimeSteps | output: ' + line)
             continue
+
+        match = re.search('.* The whole computation of the time stepping took .*', line)
+        if match:
+            return
 
 
 # at the moment: jump till the Output of timestep 0
@@ -139,10 +139,18 @@ def parseInitialization(iss):
         if match:
             return
 
+def parseExecutionTime(iss):
+    for line in iss:
+        execution_time = tryMatch(line, '.* Execution took (.*) s.')
+        if execution_time != -1:
+            return execution_time
+
+
 time_steps = []
 iss = open(sys.argv[1])
 parseInitialization(iss)
 parseTimeSteps(iss, time_steps)
+execution_time = parseExecutionTime(iss)
 
 print("read " + str(len(time_steps)) + " time steps")
 
@@ -152,11 +160,6 @@ time_step = time_steps[time_step_number]
 
 for i in range(0, len(time_steps)):
     time_steps[i].write()
-#    assembly_time_per_time_step = 0
-#    linear_solver_time_per_time_step = 0
-#    for j in range(0, len(time_steps[i].linear_steps)):
-#        print('*** ' + str(time_steps[i].time_step_number) + ' ' + str(j) + ' ' + str(time_steps[i].linear_steps[j].assembly_time) + ' ' + str(time_steps[i].linear_steps[j].run_time_linear_solver))
-#        assembly_time_per_time_step += time_steps[i].linear_steps[j].assembly_time
-#        linear_solver_time_per_time_step += time_steps[i].linear_steps[j].run_time_linear_solver
-#    print(str(i) + " " + str(len(time_steps[i].linear_steps)) + " " + str(assembly_time_per_time_step) + " " + str(linear_solver_time_per_time_step))
+
+print("execution time " + str(execution_time))
 

@@ -99,7 +99,6 @@ def parseLinearStep(iss, linear_step, read_line):
         run_time_iteration = tryMatch(line, '.*time.* Iteration #.* took (.*) s')
         if run_time_iteration != -1.0:
             linear_step.run_time_iteration = run_time_iteration
-            #linear_step.printLinearStep()
             return
         # at the moment we don't read the convergence output
 
@@ -157,19 +156,25 @@ def parseExecutionTime(iss):
 
 
 time_steps = []
-iss = open(sys.argv[1])
+iss = open(sys.argv[len(sys.argv)-1])
 parseInitialization(iss)
 parseTimeSteps(iss, time_steps)
 execution_time = parseExecutionTime(iss)
-
-print("read " + str(len(time_steps)) + " time steps")
 
 number_time_steps = len(time_steps)
 time_step_number = number_time_steps-1
 time_step = time_steps[time_step_number]
 
-for i in range(0, len(time_steps)):
-    time_steps[i].write()
+for arg in sys.argv:
+    if (arg in ("--timestep_time")):
+        for i in range(0, len(time_steps)):
+            time_steps[i].writeTimestepTime()
+    elif (arg in ("--output_time")):
+        for i in range(0, len(time_steps)):
+            time_steps[i].writeTimestepAndOutputTime()
+    elif (arg in ("--all")):
+        for i in range(0, len(time_steps)):
+            time_steps[i].write()
 
 print("execution time " + str(execution_time))
 

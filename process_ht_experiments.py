@@ -56,6 +56,16 @@ class TimeStep:
               + ' ' + str(self.timestep_time)
               + ' ' + str(self.output_time))
 
+    def writeTimestepTime(self):
+        print(str(self.timestep_time))
+
+    def writeTimestepAndOutputTime(self):
+        if (self.output_time != -1.0):
+            print(str(self.timestep_time + self.output_time))
+        else:
+            print(str(self.timestep_time))
+
+
 # reading and parsing functions
 def tryMatch(line, regex):
     match = re.search(regex, line)

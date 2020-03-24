@@ -36,6 +36,16 @@ class LinearStep:
               + ' ' + str(self.run_time_linear_solver)
               + ' ' + str(self.run_time_iteration))
 
+    def writeAsCSV(self):
+        print(str(self.linear_step_number)
+              + ',' + str(self.assembly_time)
+              + ',' + str(self.number_of_linear_iterations)
+              + ',' + str(self.run_time_linear_solver)
+              + ',' + str(self.run_time_iteration))
+
+    def writeCSVHeader(self):
+        print('Iteration,AssemblyTime,NumberOfLinearSolverIterations,LinearSolverTime,IterationTime')
+
 class TimeStep:
     """Class to store information about a time step"""
     def __init__(self, timestepnumber):
@@ -65,6 +75,9 @@ class TimeStep:
         else:
             print(str(self.timestep_time))
 
+    def writeLinearStepsAsCSV(self):
+        for linear_step in self.linear_steps:
+            linear_step.writeAsCSV()
 
 # reading and parsing functions
 def tryMatch(line, regex):
@@ -108,16 +121,13 @@ def parseLinearSteps(iss, time_step):
         time_solving_process = tryMatch(line, '.* Solving process .* took (.*) s in time step .*')
         if time_solving_process != -1.0:
             time_step.time_solving_process = time_solving_process
-            #print('xxx continue loop of parseLinearSteps | Solving process: ' + str(time_step.time_solving_process) + ', ' + line)
             continue
 
         timestep_time = tryMatch(line, '.* Time step .* took (.*) s.')
         if timestep_time != -1.0:
             time_step.timestep_time = timestep_time
-            #print('xxx return from parseLinearSteps | Time step: ' + str(time_step.timestep_time) + ', ' + line)
             return
 
-        #print('xxx continue loop Creating linear step ' + str(linear_step_counter))
         linear_step = LinearStep(linear_step_counter)
         parseLinearStep(iss, linear_step, line)
         time_step.addLinearStep(linear_step)
@@ -144,9 +154,9 @@ def parseTimeSteps(iss, time_steps):
 # at the moment: jump till the Output of timestep 0
 def parseInitialization(iss):
     for line in iss:
-        match = re.search('.* Output of timestep 0 took .*', line)
-        if match:
-            return
+        output_time_step_zero = tryMatch(line, '.* Output of timestep 0 took (.*) s.')
+        if output_time_step_zero != -1:
+            return output_time_step_zero
 
 def parseExecutionTime(iss):
     for line in iss:
@@ -157,7 +167,7 @@ def parseExecutionTime(iss):
 
 time_steps = []
 iss = open(sys.argv[len(sys.argv)-1])
-parseInitialization(iss)
+output_time_step_zero = parseInitialization(iss)
 parseTimeSteps(iss, time_steps)
 execution_time = parseExecutionTime(iss)
 
@@ -169,12 +179,19 @@ for arg in sys.argv:
     if (arg in ("--timestep_time")):
         for i in range(0, len(time_steps)):
             time_steps[i].writeTimestepTime()
+        print("execution time " + str(execution_time))
     elif (arg in ("--output_time")):
+        print(str(output_time_step_zero))
         for i in range(0, len(time_steps)):
             time_steps[i].writeTimestepAndOutputTime()
+        print("execution time " + str(execution_time))
     elif (arg in ("--all")):
+        print('output step zero: ' + str(output_time_step_zero))
         for i in range(0, len(time_steps)):
             time_steps[i].write()
-
-print("execution time " + str(execution_time))
+        print("execution time " + str(execution_time))
+    elif (arg in ("--linearsteps_as_csv")):
+        time_steps[0].linear_steps[0].writeCSVHeader()
+        for i in range(0, len(time_steps)):
+            time_steps[i].writeLinearStepsAsCSV()
 

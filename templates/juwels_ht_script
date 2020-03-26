@@ -2,7 +2,7 @@
 
 #SBATCH --nodes=NNODES
 #SBATCH --ntasks=NTASKS
-#SBATCH --ntasks-per-node=24
+#SBATCH --ntasks-per-node=48
 
 #SBATCH --output=TEMP_OUTPUT_DIR/%j-out.txt
 #SBATCH --error=TEMP_OUTPUT_DIR/%j-err.txt
@@ -13,6 +13,8 @@
 #SBATCH --mail-user thomas.fischer@ufz.de
 #SBATCH --mail-type ALL
 
+#SBATCH --account=ogs6hpc
+
 module load GCC
 module load ParaStationMPI
 module load PETSc
@@ -20,12 +22,18 @@ module load Python
 module load Boost
 module load Eigen
 
+base_data_path=BASE_DATA_PATH/data # on JUWELS /p/projects/ogs6hpc
 sub_path=cube_ht_benchmark/MODELREVISION/NTASKS
-project_path=$HOME/data/$sub_path/
-output_path=$WORK/$sub_path/results/${SLURM_JOB_NAME}/${SLURM_JOB_ID}/
-mkdir -p $output_path
+project_path=$base_data_path/$sub_path/
 project_file=$project_path/PROJECTFILE
+
+base_output_path=BASE_OUTPUT_PATH # on JUWELS /p/scratch/ogs6hpc
+output_path=$base_output_path/$sub_path/${SLURM_JOB_NAME}/${SLURM_JOB_ID}/
+mkdir -p $output_path
+
 cp $project_file $output_path
+
 srun ~/w/o/br_petsc/bin/ogs $project_file -o $output_path
-mv TEMP_OUTPUT_DIR/${SLURM_JOB_ID}-out.txt $output_path/out.txt
-mv TEMP_OUTPUT_DIR/${SLURM_JOB_ID}-err.txt $output_path/err.txt
+
+mv BASE_OUTPUT_PATH/${SLURM_JOB_ID}-out.txt $output_path/out.txt
+mv BASE_OUTPUT_PATH/${SLURM_JOB_ID}-err.txt $output_path/err.txt

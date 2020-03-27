@@ -4,8 +4,8 @@
 #SBATCH --ntasks=NTASKS
 #SBATCH --ntasks-per-node=48
 
-#SBATCH --output=TEMP_OUTPUT_DIR/%j-out.txt
-#SBATCH --error=TEMP_OUTPUT_DIR/%j-err.txt
+#SBATCH --output=BASE_OUTPUT_PATH/%j-out.txt
+#SBATCH --error=BASE_OUTPUT_PATH/%j-err.txt
 
 #SBATCH --time=RUNTIME
 #SBATCH --partition=batch

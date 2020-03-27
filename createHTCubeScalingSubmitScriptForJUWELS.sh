@@ -13,6 +13,7 @@ branch_name="ConvergenceImprovements"
 
 runtime=$1
 base_data_path=$2
+base_ogs_bin_path=$2/w/o/br_petsc/bin
 base_output_path=$3
 script_home=$2/w/HPC-scripts/
 
@@ -44,6 +45,8 @@ do
             sed --in-place "s/MODELREVISION/${model_revision}/" ${project_dir}/${submit_script}
             sed --in-place "s/RUNTIME/${runtime}/" ${project_dir}/${submit_script}
             sed --in-place "s#BASE_DATA_PATH#${base_data_path}#" ${project_dir}/${submit_script}
+            sed --in-place "s#BASE_OGS_BIN_PATH#${base_ogs_bin_path}#" ${project_dir}/${submit_script}
+            sed --in-place "s/BRANCH_NAME/${branch_name}/" ${project_dir}/${submit_script}
             sed --in-place "s#BASE_OUTPUT_PATH#${base_output_path}#" ${project_dir}/${submit_script}
             pc_options_idx+=1
         done

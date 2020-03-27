@@ -33,7 +33,7 @@ mkdir -p $output_path
 
 cp $project_file $output_path
 
-srun ~/w/o/br_petsc/bin/ogs $project_file -o $output_path
+srun BASE_OGS_BIN_PATH/ogs_BRANCH_NAME $project_file -o $output_path
 
 mv BASE_OUTPUT_PATH/${SLURM_JOB_ID}-out.txt $output_path/out.txt
 mv BASE_OUTPUT_PATH/${SLURM_JOB_ID}-err.txt $output_path/err.txt

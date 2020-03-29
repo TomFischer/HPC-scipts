@@ -1,6 +1,6 @@
 #!/bin/sh
 
-declare -a compute_nodes=("9" "10" "16" "32" "50" "64" "90" "96" "128" "160" "180" "192" "256")
+declare -a compute_nodes=("9" "10" "16" "32" "50" "64" "96" "128" "160" "192" "256")
 declare -a PETSc_KSPSolvers=("gmres")
 declare -a PETSc_Preconditioners=("jacobi")
 declare -a PETSc_Preconditioner_Options=("" " -pc_hypre_type boomeramg" "")

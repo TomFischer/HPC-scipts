@@ -36,15 +36,16 @@ class LinearStep:
               + ' ' + str(self.run_time_linear_solver)
               + ' ' + str(self.run_time_iteration))
 
-    def writeAsCSV(self):
-        print(str(self.linear_step_number)
+    def writeAsCSV(self, time_step_number):
+        print(str(time_step_number)
+              + ',' + str(self.linear_step_number)
               + ',' + str(self.assembly_time)
               + ',' + str(self.number_of_linear_iterations)
               + ',' + str(self.run_time_linear_solver)
               + ',' + str(self.run_time_iteration))
 
     def writeCSVHeader(self):
-        print('Iteration,AssemblyTime,NumberOfLinearSolverIterations,LinearSolverTime,IterationTime')
+        print('TimeStep,Iteration,AssemblyTime,NumberOfLinearSolverIterations,LinearSolverTime,IterationTime')
 
 class TimeStep:
     """Class to store information about a time step"""
@@ -75,9 +76,9 @@ class TimeStep:
         else:
             print(str(self.timestep_time))
 
-    def writeLinearStepsAsCSV(self):
+    def writeLinearStepsAsCSV(self, time_step_number):
         for linear_step in self.linear_steps:
-            linear_step.writeAsCSV()
+            linear_step.writeAsCSV(time_step_number)
 
 # reading and parsing functions
 def tryMatch(line, regex):
@@ -193,5 +194,5 @@ for arg in sys.argv:
     elif (arg in ("--linearsteps_as_csv")):
         time_steps[0].linear_steps[0].writeCSVHeader()
         for i in range(0, len(time_steps)):
-            time_steps[i].writeLinearStepsAsCSV()
+            time_steps[i].writeLinearStepsAsCSV(i)
 

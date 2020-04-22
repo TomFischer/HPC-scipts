@@ -7,7 +7,7 @@ def readCSVs(first_core, last_core):
     df = pd.read_csv(str(first_core) + '.txt')
     df['core'] = first_core
 
-    for core in range(first_core+1, last_core+1):
+    for core in range(first_core+1, last_core):
         df_t = pd.read_csv(str(core) + '.txt')
         df_t['core'] = core
         df = df.append(df_t)
@@ -47,12 +47,12 @@ def printSums(df, last_core):
             linear_solver_max = linear_solver_max + iteration['LinearSolverTime'].max()
     #print('sum of assembler times (max): ' + str(assembly_max))
     #print('sum of linear solver times (max): ' + str(linear_solver_max))
-    print(str(last_core+1) + ',' + str(assembly_max) + ',' + str(linear_solver_max))
+    print(str(last_core) + ',' + str(assembly_max) + ',' + str(linear_solver_max))
 
 
 def main():
     first_core=int(sys.argv[1])
-    last_core=int(sys.argv[2])
+    last_core=int(sys.argv[2]) + 1
     df = readCSVs(first_core, last_core)
     #df.to_csv('complete_data.csv', ',')
     #printStatistics(df)

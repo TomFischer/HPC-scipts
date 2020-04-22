@@ -11,10 +11,17 @@ do
 done
 
 # process the files in part_out_files folder
-mkdir -p processed_data/linearsteps
+wd=`pwd`
+detailed_output_folder=processed_data/linearsteps
+script_path=$HOME/w/HPC-scripts/
+mkdir -p $detailed_output_folder
 for i in `seq 0 $2`;
 do
-    python ~/w/HPC-scripts/process_ht_experiments.py --linearsteps_as_csv part_out_files/$i.txt > processed_data/linearsteps/$i.txt
+    python ${script_path}/process_ht_experiments.py --linearsteps_as_csv part_out_files/$i.txt > $detailed_output_folder/$i.txt
 done
+
+cd $detailed_output_folder
+python ${script_path}/combine_detailed_data.py 0 $2
+cd $wd
 
 

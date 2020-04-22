@@ -174,7 +174,6 @@ execution_time = parseExecutionTime(iss)
 
 number_time_steps = len(time_steps)
 time_step_number = number_time_steps-1
-time_step = time_steps[time_step_number]
 
 for arg in sys.argv:
     if (arg in ("--timestep_time")):
@@ -195,4 +194,3 @@ for arg in sys.argv:
         time_steps[0].linear_steps[0].writeCSVHeader()
         for i in range(0, len(time_steps)):
             time_steps[i].writeLinearStepsAsCSV(i)
-

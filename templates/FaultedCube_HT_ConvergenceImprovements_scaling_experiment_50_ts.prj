@@ -304,7 +304,8 @@
         </processes>
         <output>
             <type>VTK</type>
-            <prefix>ThermalConvection</prefix>
+            <prefix>ThermalConvection_pcs_{:process_id}</prefix>
+            <suffix>_ts_{:timestep}_t_{:time}</suffix>
             <timesteps>
                 <pair>
                     <repeat>50</repeat>
